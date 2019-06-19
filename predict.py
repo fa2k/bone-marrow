@@ -43,22 +43,25 @@ def load_input_and_orient(input_file):
             sys.exit(1)
     return data, transposed
 
-model = tf.keras.models.load_model(args.model)
-data, transposed = load_input_and_orient(args.INPUT)
+def main():
+    model = tf.keras.models.load_model(args.model)
+    data, transposed = load_input_and_orient(args.INPUT)
 
-# TODO: Change the normalisation constant to max of all the current inputs?
-norm_inputs = data / args.input_norm
-predictions = model.predict(norm_inputs)
-rounded_predictions = np.round(predictions * args.output_norm)
-predictions = np.clip(predictions, a_min=1, a_max=NUM_LAYERS, out=predictions)
-num_predictions = len(predictions)
-if transposed:
-    predictions = np.transpose(predictions)
-if not args.output_file:
-    args.output_file = re.sub(args.INPUT, r"(\.\w+)?$", "_ObBmIb_bounds.txt")
-np.savetxt(args.output_file, predictions, fmt="%1.0f", delimiter=args.delimiter)
-print("{} predictions written to file {}.".format(
-    num_predictions,
-    args.output_file
-    ))
+    # TODO: Change the normalisation constant to max of all the current inputs?
+    norm_inputs = data / args.input_norm
+    predictions = model.predict(norm_inputs)
+    rounded_predictions = np.round(predictions * args.output_norm)
+    predictions = np.clip(predictions, a_min=1, a_max=NUM_LAYERS, out=predictions)
+    num_predictions = len(predictions)
+    if transposed:
+        predictions = np.transpose(predictions)
+    if not args.output_file:
+        args.output_file = re.sub(args.INPUT, r"(\.\w+)?$", "_ObBmIb_bounds.txt")
+    np.savetxt(args.output_file, predictions, fmt="%1.0f", delimiter=args.delimiter)
+    print("{} predictions written to file {}.".format(
+        num_predictions,
+        args.output_file
+        ))
 
+if __name__ == "__main__":
+    main()
