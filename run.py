@@ -41,9 +41,11 @@ def load_input_and_orient(input_file):
 
 def main():
     model = tf.keras.models.load_model(args.model)
+
     if len(args.INPUTS) > 1 and args.output_file:
         print("Error: output file cannot be specified when there are multiple inputs.")
         sys.exit(1)
+
     for input_filename in args.INPUTS:
         data, is_transposed = load_input_and_orient(input_filename)
 
@@ -55,13 +57,12 @@ def main():
         num_predictions = len(predictions)
         if is_transposed:
             predictions = np.transpose(predictions)
-        if not args.output_file:
-            args.output_file = re.sub(r"(\.\w+)?$", "_ObBmIb_bounds.txt", input_filename)
-        np.savetxt(args.output_file, predictions, fmt="%1.0f", delimiter=args.delimiter)
-        print("{} results written to file {}.".format(
-            num_predictions,
-            args.output_file
-            ))
+        if args.output_file:
+            output_file = args.output_file
+        else:
+            output_file = re.sub(r"(\.\w+)?$", "_ObBmIb_bounds.txt", input_filename)
+        np.savetxt(output_file, predictions, fmt="%1.0f", delimiter=args.delimiter)
+        print("{} results written to file {}.".format(num_predictions, output_file))
 
 if __name__ == "__main__":
     main()
