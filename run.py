@@ -60,7 +60,8 @@ def main():
         if args.output_file:
             output_file = args.output_file
         else:
-            output_file = re.sub(r"(\.\w+)?$", "_ObBmIb_bounds.txt", input_filename)
+            output_file = re.sub(r"\.\w+$", "", input_filename)
+            output_file += "_ObBmIb_bounds.txt"
         np.savetxt(output_file, predictions, fmt="%1.0f", delimiter=args.delimiter)
         print("{} results written to file {}.".format(num_predictions, output_file))
 
